@@ -20,15 +20,27 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/spencerkimball/cockroach/server"
+	"github.com/cockroachdb/cockroach/server"
 )
 
 var (
-	port = flag.String("port", ":8080", "port to bind to")
+	port    = flag.String("port", ":8080", "port to bind the http public to")
+	spiPort = flag.String("spi-port", "5001", "node-local api port")
 )
 
 func main() {
 	flag.Parse()
-	log.Println("Starting node on port", *port)
-	log.Fatal(http.ListenAndServe(*port, server.New()))
+
+	go listenAndServeHttp(*port)
+	go listenAndServeLocalNode(*spiPort)
+
+}
+
+func listenAndServeHttp(port string) {
+	log.Println("Starting node on port", port)
+	log.Fatal(http.ListenAndServe(port, server.New()))
+}
+
+func listenAndServeLocalNode(port string) {
+	// TODO
 }
