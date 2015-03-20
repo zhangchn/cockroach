@@ -38,7 +38,7 @@ import (
 	"github.com/cockroachdb/cockroach/util"
 	"github.com/cockroachdb/cockroach/util/hlc"
 	"github.com/cockroachdb/cockroach/util/log"
-	"github.com/elazarl/go-bindata-assetfs"
+	assetfs "github.com/elazarl/go-bindata-assetfs"
 )
 
 var (
@@ -116,7 +116,8 @@ func NewServer(ctx *Context) (*Server, error) {
 
 	// Create a client.KVSender instance for use with this node's
 	// client to the key value database as well as
-	sender := kv.NewTxnCoordSender(kv.NewDistSender(s.gossip), s.clock, ctx.Linearizable)
+	ds := kv.NewDistSender(s.clock, s.gossip)
+	sender := kv.NewTxnCoordSender(ds, s.clock, ctx.Linearizable)
 	s.kv = client.NewKV(sender, nil)
 	s.kv.User = storage.UserRoot
 
