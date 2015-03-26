@@ -31,8 +31,9 @@ import (
 // SetupRangeTree is called via store.BootstrapRange.
 func TestSetupRangeTree(t *testing.T) {
 	defer leaktest.AfterTest(t)
-	store, clock := createTestStoreWithClock(t)
+	store := createTestStore(t)
 	defer store.Stop()
+	clock := store.Clock()
 
 	// Check to make sure the range tree is stored correctly.
 	expectedTree := &proto.RangeTree{
